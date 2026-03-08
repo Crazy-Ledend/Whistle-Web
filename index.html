@@ -81,6 +81,37 @@ body{
 }
 #searchInput::placeholder{color:var(--text3);}
 #searchInput:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow);}
+.search-suggest{
+  position:absolute;
+  top:110%;
+  left:0;
+  right:0;
+  background:var(--layer3);
+  border:1px solid var(--border);
+  border-radius:12px;
+  overflow:hidden;
+  box-shadow:0 10px 40px rgba(0,0,0,0.5);
+  display:none;
+  z-index:200;
+}
+
+.search-suggest-item{
+  padding:9px 12px;
+  font-size:0.82rem;
+  color:var(--text2);
+  cursor:pointer;
+  border-bottom:1px solid rgba(255,255,255,0.04);
+  transition:background 0.15s,color 0.15s;
+}
+
+.search-suggest-item:last-child{
+  border-bottom:none;
+}
+
+.search-suggest-item:hover{
+  background:var(--accent-dim);
+  color:var(--accent);
+}
 
 .top-btn{
   flex-shrink:0;background:var(--layer3);border:1px solid var(--border);border-radius:12px;
@@ -365,6 +396,7 @@ kbd{background:var(--layer3);border:1px solid var(--border2);border-radius:6px;p
   <div class="search-wrap">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
     <input type="text" id="searchInput" placeholder="Search songs…" autocomplete="off"/>
+    <div id="searchSuggest" class="search-suggest"></div>
   </div>
   <button class="top-btn" id="playlistToggle">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
@@ -554,6 +586,7 @@ const prevBtn=$('prevBtn'), nextBtn=$('nextBtn'), loopBtn=$('loopBtn');
 const progressBar=$('progressBar'), timeEl=$('timeEl'), durationEl=$('durationEl');
 const volumeBar=$('volumeBar'), volLabel=$('volLabel');
 const songList=$('songList'), searchInput=$('searchInput');
+const searchSuggest = document.getElementById('searchSuggest');
 const playlistToggle=$('playlistToggle'), playlistModal=$('playlistModal'), playlistClose=$('playlistClose');
 const modalBadge=$('modalBadge'), selectAllBtn=$('selectAllBtn'), deselectAllBtn=$('deselectAllBtn');
 const settingsToggle=$('settingsToggle'), settingsModal=$('settingsModal'), settingsClose=$('settingsClose');
@@ -830,7 +863,54 @@ deselectAllBtn.addEventListener('click',()=>{
   allSongs.forEach((_,i)=>{if(cur&&cur.origIdx===i){enabled[i]=true;return;}enabled[i]=false;});
   buildPlaylist();renderList();updateIdx();
 });
-searchInput.addEventListener('input',()=>{searchQuery=searchInput.value;buildPlaylist();renderList();updateIdx();});
+searchInput.addEventListener('input',()=>{
+  const val = searchInput.value.trim().toLowerCase();
+  searchQuery = val;
+
+  if(!val){
+    searchSuggest.style.display='none';
+    buildPlaylist();
+    renderList();
+    updateIdx();
+    return;
+  }
+
+  const matches = allSongs
+    .filter(s => s.title.toLowerCase().includes(val))
+    .slice(0,6);
+
+  if(!matches.length){
+    searchSuggest.style.display='none';
+    return;
+  }
+
+  searchSuggest.innerHTML = matches.map(song =>
+    `<div class="search-suggest-item">${esc(song.title)}</div>`
+  ).join('');
+
+  searchSuggest.style.display='block';
+
+  document.querySelectorAll('.search-suggest-item').forEach((el,i)=>{
+    el.addEventListener('click',()=>{
+      searchInput.value = matches[i].title;
+      searchSuggest.style.display='none';
+      searchQuery = matches[i].title.toLowerCase();
+      buildPlaylist();
+      renderList();
+      updateIdx();
+    });
+  });
+
+  buildPlaylist();
+  renderList();
+  updateIdx();
+});
+  
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.search-wrap')){
+    searchSuggest.style.display='none';
+  }
+});
 
 function setOrder(o){
   currentOrder=o;
