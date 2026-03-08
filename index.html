@@ -48,28 +48,30 @@ body{
 .bg-blob-1{width:700px;height:700px;background:var(--accent);top:-280px;left:-280px;}
 .bg-blob-2{width:500px;height:500px;background:var(--accent);bottom:-200px;right:-200px;opacity:0.035;}
 
-/* ── TOPBAR ── */
+/* ── TOPBAR — full width, no max-width cap ── */
 .topbar{
   position:sticky;top:0;z-index:100;
-  width:100%;max-width:860px;
+  width:100%;
   display:flex;align-items:center;gap:10px;
-  padding:15px 20px;
+  padding:15px 40px;
   background:rgba(5,5,10,0.92);
   backdrop-filter:blur(24px);
   border-bottom:1px solid var(--border);
+  justify-content: flex-end;
 }
 .logo{
   font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;
   color:var(--text);letter-spacing:-0.02em;
   white-space:nowrap;flex-shrink:0;
   display:flex;align-items:center;gap:7px;
+  margin-right:auto;
 }
 .logo-dot{
   width:7px;height:7px;border-radius:50%;
   background:var(--accent);box-shadow:0 0 8px var(--accent);
   transition:background 0.35s,box-shadow 0.35s;
 }
-.search-wrap{flex:1;position:relative;}
+.search-wrap{flex:1;position:relative;max-width:520px;}
 .search-wrap svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text3);pointer-events:none;}
 #searchInput{
   width:100%;background:var(--layer3);border:1px solid var(--border);border-radius:12px;
@@ -101,12 +103,13 @@ body{
 .top-icon-btn:hover{background:var(--layer4);color:var(--text);border-color:var(--border2);}
 .top-icon-btn.active{background:var(--accent-dim);color:var(--accent);border-color:var(--accent-glow);}
 
-/* ── MAIN ── */
-.main{position:relative;z-index:1;width:100%;max-width:860px;padding:26px 20px 90px;display:flex;flex-direction:column;align-items:center;}
+/* ── MAIN — full width, player card centered inside ── */
+.main{position:relative;z-index:1;width:100%;padding:26px 40px 90px;display:flex;flex-direction:column;align-items:center;}
 
 /* ── PLAYER CARD ── */
 .player-card{
-  width:100%;background:var(--layer2);border:1px solid var(--border);border-radius:24px;
+  width:100%;max-width:600px;
+  background:var(--layer2);border:1px solid var(--border);border-radius:24px;
   padding:36px 30px 32px;
   display:flex;flex-direction:column;align-items:center;gap:22px;
   position:relative;overflow:hidden;transition:background 0.35s,border-color 0.35s;
@@ -159,7 +162,6 @@ body{
   margin-top:11px;padding:0 1px;
 }
 
-/* Horizontal range base */
 input[type=range]{
   -webkit-appearance:none;appearance:none;
   height:4px;border-radius:99px;outline:none;cursor:pointer;
@@ -195,25 +197,9 @@ input[type=range]::-moz-range-track{background:transparent;height:4px;border-rad
 .play-btn:hover{background:rgba(255,255,255,0.1);color:#fff;border-color:rgba(255,255,255,0.2);}
 .play-btn:active{transform:scale(0.94);}
 
-/* ── VOLUME ──
-   Key fix: the .volume-anchor is the hover target.
-   A pseudo-element bridge fills the gap between button and popup
-   so moving the mouse upward doesn't break the hover state.
-*/
-.volume-anchor{
-  position:relative;
-  display:flex;align-items:center;
-}
-
-/* invisible bridge between button top edge and popup bottom edge */
-.volume-anchor::before{
-  content:'';
-  position:absolute;
-  bottom:100%;left:0;right:0;
-  height:16px; /* covers the gap */
-  background:transparent;
-}
-
+/* ── VOLUME ── */
+.volume-anchor{position:relative;display:flex;align-items:center;}
+.volume-anchor::before{content:'';position:absolute;bottom:100%;left:0;right:0;height:16px;background:transparent;}
 .vol-icon-btn{
   background:var(--layer3);border:1px solid var(--border);border-radius:14px;
   color:var(--text2);cursor:pointer;
@@ -222,56 +208,29 @@ input[type=range]::-moz-range-track{background:transparent;height:4px;border-rad
   transition:color 0.18s,background 0.18s,border-color 0.18s;
 }
 .volume-anchor:hover .vol-icon-btn{background:var(--layer4);color:var(--text);border-color:var(--border2);}
-
 .vol-popup{
-  position:absolute;
-  bottom:calc(100% + 8px); /* tighter gap */
-  left:50%;transform:translateX(-50%) translateY(6px);
-  background:var(--layer3);
-  border:1px solid var(--border2);border-radius:16px;
+  position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%) translateY(6px);
+  background:var(--layer3);border:1px solid var(--border2);border-radius:16px;
   padding:14px 12px 10px;
   display:flex;flex-direction:column;align-items:center;gap:10px;
   box-shadow:0 14px 44px rgba(0,0,0,0.65);
   opacity:0;pointer-events:none;
   transition:opacity 0.18s,transform 0.18s;
-  z-index:200;width:52px;
-  /* don't let the popup itself trigger re-paint delays */
-  will-change:opacity,transform;
+  z-index:200;width:52px;will-change:opacity,transform;
 }
 .vol-popup::after{
   content:'';position:absolute;bottom:-6px;left:50%;transform:translateX(-50%);
-  width:12px;height:6px;background:var(--layer3);
-  clip-path:polygon(0 0,100% 0,50% 100%);
+  width:12px;height:6px;background:var(--layer3);clip-path:polygon(0 0,100% 0,50% 100%);
 }
-.volume-anchor:hover .vol-popup{
-  opacity:1;pointer-events:all;
-  transform:translateX(-50%) translateY(0);
-}
+.volume-anchor:hover .vol-popup{opacity:1;pointer-events:all;transform:translateX(-50%) translateY(0);}
 .vol-pct{font-size:0.66rem;color:var(--text3);font-variant-numeric:tabular-nums;}
-
-/* Volume slider — rotated horizontal slider (cross-browser) */
-.vol-slider-wrap{
-  width:4px;height:90px;
-  display:flex;align-items:center;justify-content:center;
-  position:relative;
-}
-#volumeBar{
-  position:absolute;
-  width:90px;height:4px;   /* horizontal */
-  transform:rotate(-90deg);
-  transform-origin:center center;
-  cursor:pointer;
-  border-radius:99px;
-}
+.vol-slider-wrap{width:4px;height:90px;display:flex;align-items:center;justify-content:center;position:relative;}
+#volumeBar{position:absolute;width:90px;height:4px;transform:rotate(-90deg);transform-origin:center center;cursor:pointer;border-radius:99px;}
 
 /* ── SHARED MODAL ── */
 .modal-overlay{
-  position:fixed;inset:0;
-  background:rgba(0,0,0,0.72);
-  backdrop-filter:blur(10px);
-  z-index:300;
-  display:flex;align-items:center;justify-content:center;
-  padding:24px;
+  position:fixed;inset:0;background:rgba(0,0,0,0.72);backdrop-filter:blur(10px);
+  z-index:300;display:flex;align-items:center;justify-content:center;padding:24px;
   opacity:0;pointer-events:none;transition:opacity 0.22s;
 }
 .modal-overlay.open{opacity:1;pointer-events:all;}
@@ -284,10 +243,7 @@ input[type=range]::-moz-range-track{background:transparent;height:4px;border-rad
   transition:transform 0.28s cubic-bezier(0.34,1.56,0.64,1),background 0.35s;
 }
 .modal-overlay.open .modal-box{transform:scale(1) translateY(0);}
-.modal-deco{
-  height:2px;flex-shrink:0;
-  background:linear-gradient(90deg,transparent 0%,var(--accent) 35%,var(--accent-glow) 65%,transparent 100%);
-}
+.modal-deco{height:2px;flex-shrink:0;background:linear-gradient(90deg,transparent 0%,var(--accent) 35%,var(--accent-glow) 65%,transparent 100%);}
 .modal-box::before{
   content:'';position:absolute;top:0;left:0;right:0;height:100px;
   background:radial-gradient(ellipse at 50% 0%,var(--accent-glow) 0%,transparent 70%);
@@ -295,8 +251,7 @@ input[type=range]::-moz-range-track{background:transparent;height:4px;border-rad
 }
 .modal-header{
   display:flex;align-items:center;justify-content:space-between;
-  padding:17px 20px 13px;gap:10px;
-  border-bottom:1px solid var(--border);
+  padding:17px 20px 13px;gap:10px;border-bottom:1px solid var(--border);
   position:relative;z-index:1;
 }
 .modal-title-row{display:flex;align-items:center;gap:9px;}
@@ -319,9 +274,17 @@ input[type=range]::-moz-range-track{background:transparent;height:4px;border-rad
 .order-btn{background:var(--layer3);border:1px solid var(--border);border-radius:9px;padding:4px 11px;font-size:0.73rem;color:var(--text3);cursor:pointer;transition:all 0.18s;font-family:'DM Sans',sans-serif;}
 .order-btn:hover,.order-btn.active{background:var(--accent-dim);color:var(--accent);border-color:var(--accent-glow);}
 
-.song-list{overflow-y:auto;flex:1;scrollbar-width:thin;scrollbar-color:var(--layer4) transparent;}
-.song-list::-webkit-scrollbar{width:4px;}
-.song-list::-webkit-scrollbar-thumb{background:var(--layer4);border-radius:99px;}
+/* ── SHARED THIN SCROLLBAR — applied to both song list and settings ── */
+.styled-scroll{
+  overflow-y:auto;
+  flex:1;
+  scrollbar-width:thin;
+  scrollbar-color:var(--layer4) transparent;
+}
+.styled-scroll::-webkit-scrollbar{width:4px;}
+.styled-scroll::-webkit-scrollbar-track{background:transparent;}
+.styled-scroll::-webkit-scrollbar-thumb{background:var(--layer4);border-radius:99px;}
+.styled-scroll::-webkit-scrollbar-thumb:hover{background:var(--border2);}
 
 .song-item{display:flex;align-items:center;gap:11px;padding:9px 18px;cursor:pointer;transition:background 0.14s;border-bottom:1px solid rgba(255,255,255,0.025);user-select:none;}
 .song-item:hover{background:rgba(255,255,255,0.03);}
@@ -352,8 +315,8 @@ input[type=range]::-moz-range-track{background:transparent;height:4px;border-rad
 .loading{display:flex;flex-direction:column;align-items:center;gap:14px;padding:40px;color:var(--text3);font-size:0.83rem;}
 .spinner{width:28px;height:28px;border:2px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;}
 
-/* ── SETTINGS ── */
-.settings-body{padding:18px 20px 22px;display:flex;flex-direction:column;gap:22px;overflow-y:auto;}
+/* ── SETTINGS body — no overflow here, handled by styled-scroll wrapper ── */
+.settings-body{padding:18px 20px 22px;display:flex;flex-direction:column;gap:22px;}
 .setting-section{display:flex;flex-direction:column;gap:10px;}
 .setting-section-title{font-size:0.7rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);padding-bottom:6px;border-bottom:1px solid var(--border);}
 .theme-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;}
@@ -421,12 +384,12 @@ kbd{background:var(--layer3);border:1px solid var(--border2);border-radius:6px;p
       <div class="pulse-ring" id="pulse2"></div>
       <div class="pulse-ring" id="pulse3"></div>
       <div class="ring" id="ring"></div>
-      <div class="art-inner" id="artInner"><div class="art-placeholder">♪</div></div>
+      <div class="art-inner" id="artInner"><div class="art-placeholder">&#9836;</div></div>
     </div>
 
     <div class="song-info">
-      <div class="song-title" id="songTitle">Loading…</div>
-      <div class="song-index" id="songIndex">– / –</div>
+      <div class="song-title" id="songTitle">Loading&hellip;</div>
+      <div class="song-index" id="songIndex">&ndash; / &ndash;</div>
     </div>
 
     <div class="progress-wrap">
@@ -441,18 +404,17 @@ kbd{background:var(--layer3);border:1px solid var(--border2);border-radius:6px;p
       <button class="ctrl-btn" id="loopBtn" title="Loop (L)">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
       </button>
-      <button class="ctrl-btn" id="prevBtn" title="Previous (←)">
+      <button class="ctrl-btn" id="prevBtn" title="Previous (&larr;)">
         <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor"><polygon points="19 20 9 12 19 4 19 20"/><rect x="4" y="5" width="3" height="14" rx="1.5"/></svg>
       </button>
       <button class="ctrl-btn play-btn" id="playBtn" title="Play/Pause (Space)">
         <svg id="playIcon" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
         <svg id="pauseIcon" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" style="display:none"><rect x="6" y="4" width="4" height="16" rx="1.5"/><rect x="14" y="4" width="4" height="16" rx="1.5"/></svg>
       </button>
-      <button class="ctrl-btn" id="nextBtn" title="Next (→)">
+      <button class="ctrl-btn" id="nextBtn" title="Next (&rarr;)">
         <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 4 15 12 5 20 5 4"/><rect x="17" y="5" width="3" height="14" rx="1.5"/></svg>
       </button>
 
-      <!-- Volume with JS-driven hover to fix cross-browser gap issue -->
       <div class="volume-anchor" id="volAnchor">
         <button class="vol-icon-btn" id="volIconBtn" title="Volume">
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -492,12 +454,13 @@ kbd{background:var(--layer3);border:1px solid var(--border2);border-radius:6px;p
     <div class="order-wrap">
       <span class="order-label">Order:</span>
       <button class="order-btn active" id="orderDefault">Default</button>
-      <button class="order-btn" id="orderAZ">A → Z</button>
-      <button class="order-btn" id="orderZA">Z → A</button>
+      <button class="order-btn" id="orderAZ">A &rarr; Z</button>
+      <button class="order-btn" id="orderZA">Z &rarr; A</button>
       <button class="order-btn" id="orderShuffle">Shuffle</button>
     </div>
-    <div class="song-list" id="songList">
-      <div class="loading"><div class="spinner"></div>Loading…</div>
+    <!-- styled-scroll gives the thin 4px scrollbar -->
+    <div class="styled-scroll" id="songList">
+      <div class="loading"><div class="spinner"></div>Loading&hellip;</div>
     </div>
   </div>
 </div>
@@ -512,7 +475,8 @@ kbd{background:var(--layer3);border:1px solid var(--border2);border-radius:6px;p
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
-    <div class="settings-body">
+    <!-- same styled-scroll class = identical scrollbar -->
+    <div class="settings-body styled-scroll">
       <div class="setting-section">
         <div class="setting-section-title">Theme</div>
         <div class="theme-grid" id="themeGrid">
@@ -557,8 +521,8 @@ kbd{background:var(--layer3);border:1px solid var(--border2);border-radius:6px;p
         <div class="setting-section-title">Keyboard Shortcuts</div>
         <div class="kbd-list">
           <div class="kbd-row"><span>Play / Pause</span><kbd>Space</kbd></div>
-          <div class="kbd-row"><span>Next song</span><kbd>→</kbd></div>
-          <div class="kbd-row"><span>Previous song</span><kbd>←</kbd></div>
+          <div class="kbd-row"><span>Next song</span><kbd>&rarr;</kbd></div>
+          <div class="kbd-row"><span>Previous song</span><kbd>&larr;</kbd></div>
           <div class="kbd-row"><span>Toggle loop</span><kbd>L</kbd></div>
           <div class="kbd-row"><span>Close modal</span><kbd>Esc</kbd></div>
         </div>
@@ -570,7 +534,6 @@ kbd{background:var(--layer3);border:1px solid var(--border2);border-radius:6px;p
 <audio id="audio"></audio>
 
 <script>
-// ── PATHS ── (files live in /songs/ and /thumbs/ subfolders)
 const RAW = 'https://raw.githubusercontent.com/Crazy-Ledend/whistle-audio-files/main/';
 const SONGS_URL = RAW + 'songs.json';
 const songPath  = f => RAW + 'songs/' + f;
@@ -596,7 +559,6 @@ const modalBadge=$('modalBadge'), selectAllBtn=$('selectAllBtn'), deselectAllBtn
 const settingsToggle=$('settingsToggle'), settingsModal=$('settingsModal'), settingsClose=$('settingsClose');
 const orderBtns={default:$('orderDefault'),az:$('orderAZ'),za:$('orderZA'),shuffle:$('orderShuffle')};
 
-// ── INIT ──
 async function init(){
   loadStorage(); applySettings();
   try{
@@ -606,7 +568,7 @@ async function init(){
     allSongs.forEach((_,i)=>enabled[i]=true);
     buildPlaylist(); loadSong(0,false); renderList();
   }catch(e){
-    songList.innerHTML=`<div class="empty-state">⚠️ Could not load songs.<br><small>${e.message}</small></div>`;
+    songList.innerHTML='<div class="empty-state">Could not load songs.<br><small>'+e.message+'</small></div>';
     songTitle.textContent='Error loading songs';
   }
 }
@@ -628,7 +590,6 @@ function applySettings(){
 }
 function syncToggle(id,val){const el=$(id);if(!el)return;el.classList.toggle('on',val);}
 
-// ── PLAYLIST BUILD ──
 function buildPlaylist(){
   const q=searchQuery.trim().toLowerCase();
   let list=allSongs.map((s,origIdx)=>({...s,origIdx}))
@@ -639,7 +600,6 @@ function buildPlaylist(){
   if(currentIdx>=playlist.length)currentIdx=0;
 }
 
-// ── RENDER SONG LIST ──
 function renderList(){
   buildPlaylist();
   modalBadge.textContent=playlist.length+' active';
@@ -652,18 +612,18 @@ function renderList(){
     const item=document.createElement('div');
     item.className='song-item'+(isActive?' playing':'')+(isEn?'':' disabled');
     item.draggable=true;
-    item.innerHTML=`
-      <div class="drag-handle"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" opacity="0.35"><circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="18" r="1.5"/><circle cx="15" cy="18" r="1.5"/></svg></div>
-      <div class="song-item-thumb" id="lt${i}"><span>♪</span></div>
-      <div class="song-item-info">
-        <div class="song-item-title">${esc(song.title)}</div>
-        <div class="song-item-num">${plPos>=0?`#${plPos+1} in queue`:'Disabled'}</div>
-      </div>
-      <div class="playing-eq"><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div></div>
-      <div class="toggle ${isEn?'on':''}" data-orig="${i}"></div>`;
+    item.innerHTML=
+      '<div class="drag-handle"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" opacity="0.35"><circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="18" r="1.5"/><circle cx="15" cy="18" r="1.5"/></svg></div>'+
+      '<div class="song-item-thumb" id="lt'+i+'"><span>&#9836;</span></div>'+
+      '<div class="song-item-info">'+
+        '<div class="song-item-title">'+esc(song.title)+'</div>'+
+        '<div class="song-item-num">'+(plPos>=0?'#'+(plPos+1)+' in queue':'Disabled')+'</div>'+
+      '</div>'+
+      '<div class="playing-eq"><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div></div>'+
+      '<div class="toggle '+(isEn?'on':'')+'" data-orig="'+i+'"></div>';
     if(song.thumb){
       const img=new Image();
-      img.onload=()=>{const el=$(`lt${i}`);if(el){el.innerHTML='';el.appendChild(img);}};
+      img.onload=()=>{const el=$('lt'+i);if(el){el.innerHTML='';el.appendChild(img);}};
       img.src=thumbPath(song.thumb);
       img.style.cssText='width:100%;height:100%;object-fit:cover;';
     }
@@ -708,11 +668,10 @@ function reorderSong(fromOrig,toOrig){
   if(currentOrder!=='default')setOrder('default');
 }
 
-// ── LOAD SONG ──
 function loadSong(idx,autoplay){
   const song=playlist[idx]; if(!song)return;
   songTitle.textContent=song.title; updateIdx();
-  artInner.innerHTML='<div class="art-placeholder">♪</div>';
+  artInner.innerHTML='<div class="art-placeholder">&#9836;</div>';
   if(song.thumb){
     const img=new Image();
     img.onload=()=>{artInner.innerHTML='';artInner.appendChild(img);img.style.cssText='width:100%;height:100%;object-fit:cover;border-radius:50%;';};
@@ -726,27 +685,23 @@ function loadSong(idx,autoplay){
 }
 
 function updateIdx(){
-  songIndex.textContent=playlist.length?`${currentIdx+1} / ${playlist.length}`:'– / –';
+  songIndex.textContent=playlist.length?(currentIdx+1)+' / '+playlist.length:'- / -';
   songIndex.style.display=settings.showIndex?'':'none';
 }
 
-// ── PROGRESS BAR — direct background update, no CSS vars ──
 function updateProgressBar(pct){
   progressBar.value=pct;
   const track=getComputedStyle(document.body).getPropertyValue('--slider-track').trim()||'rgba(255,255,255,0.08)';
   const fill=getComputedStyle(document.body).getPropertyValue('--text2').trim()||'#8888a0';
-  progressBar.style.background=`linear-gradient(to right,${fill} 0%,${fill} ${pct}%,${track} ${pct}%)`;
+  progressBar.style.background='linear-gradient(to right,'+fill+' 0%,'+fill+' '+pct+'%,'+track+' '+pct+'%)';
 }
 
-// ── VOLUME BAR ──
 function updateVolumeBar(pct){
   const track=getComputedStyle(document.body).getPropertyValue('--slider-track').trim()||'rgba(255,255,255,0.08)';
   const fill=getComputedStyle(document.body).getPropertyValue('--text2').trim()||'#8888a0';
-  // rotated -90deg so "right" = "up"; visual fill goes left-to-right matching value
-  volumeBar.style.background=`linear-gradient(to right,${fill} 0%,${fill} ${pct}%,${track} ${pct}%)`;
+  volumeBar.style.background='linear-gradient(to right,'+fill+' 0%,'+fill+' '+pct+'%,'+track+' '+pct+'%)';
 }
 
-// ── PLAY STATE ──
 function setPlaying(val){
   isPlaying=val;
   playIcon.style.display=val?'none':'block';
@@ -772,7 +727,6 @@ loopBtn.addEventListener('click',()=>{
   settings.loopPlaylist=isLoop;saveStorage();syncToggle('toggleLoopPlaylist',isLoop);
 });
 
-// ── AUDIO EVENTS ──
 audio.addEventListener('timeupdate',()=>{
   if(!audio.duration||isNaN(audio.duration))return;
   const pct=(audio.currentTime/audio.duration)*100;
@@ -793,7 +747,6 @@ progressBar.addEventListener('input',()=>{
   updateProgressBar(parseFloat(progressBar.value));
 });
 
-// ── VOLUME ──
 audio.volume=0.8;
 updateVolumeBar(80);
 volumeBar.addEventListener('input',()=>{
@@ -805,21 +758,18 @@ volumeBar.addEventListener('input',()=>{
   $('volWave2').style.display=v>40?'':'none';
 });
 
-// ── VOLUME POPUP — JS hover with delay to survive gap between button and popup ──
 const volAnchor=$('volAnchor'), volPopup=$('volPopup');
 let volHideTimer=null;
 function showVolPopup(){
   if(volHideTimer){clearTimeout(volHideTimer);volHideTimer=null;}
-  volPopup.style.opacity='1';
-  volPopup.style.pointerEvents='all';
+  volPopup.style.opacity='1';volPopup.style.pointerEvents='all';
   volPopup.style.transform='translateX(-50%) translateY(0)';
 }
 function hideVolPopup(){
   volHideTimer=setTimeout(()=>{
-    volPopup.style.opacity='0';
-    volPopup.style.pointerEvents='none';
+    volPopup.style.opacity='0';volPopup.style.pointerEvents='none';
     volPopup.style.transform='translateX(-50%) translateY(6px)';
-  },120); // 120ms grace period
+  },120);
 }
 volAnchor.addEventListener('mouseenter',showVolPopup);
 volAnchor.addEventListener('mouseleave',hideVolPopup);
@@ -828,7 +778,6 @@ volPopup.addEventListener('mouseleave',hideVolPopup);
 
 function fmt(s){if(!s||isNaN(s))return'0:00';return Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0');}
 
-// ── MODALS ──
 function openModal(el){el.classList.add('open');document.body.style.overflow='hidden';}
 function closeModal(el){el.classList.remove('open');document.body.style.overflow='';}
 function closeAll(){closeModal(playlistModal);closeModal(settingsModal);playlistToggle.classList.remove('active');settingsToggle.classList.remove('active');}
@@ -847,14 +796,12 @@ settingsToggle.addEventListener('click',()=>{
 settingsClose.addEventListener('click',()=>{closeModal(settingsModal);settingsToggle.classList.remove('active');});
 settingsModal.addEventListener('click',e=>{if(e.target===settingsModal){closeModal(settingsModal);settingsToggle.classList.remove('active');}});
 
-// ── SETTINGS ──
 $('themeGrid').addEventListener('click',e=>{
   const sw=e.target.closest('.theme-swatch'); if(!sw)return;
   settings.theme=sw.dataset.theme;
   document.body.dataset.theme=settings.theme;
   document.querySelectorAll('.theme-swatch').forEach(s=>s.classList.toggle('active',s===sw));
   saveStorage();
-  // re-render sliders with new theme colours
   const pct=progressBar.value?parseFloat(progressBar.value):0;
   setTimeout(()=>{updateProgressBar(pct);updateVolumeBar(parseFloat(volumeBar.value));},50);
 });
@@ -877,7 +824,6 @@ document.querySelectorAll('[data-xfade]').forEach(b=>{
   });
 });
 
-// ── PLAYLIST ACTIONS ──
 selectAllBtn.addEventListener('click',()=>{allSongs.forEach((_,i)=>enabled[i]=true);buildPlaylist();renderList();});
 deselectAllBtn.addEventListener('click',()=>{
   const cur=playlist[currentIdx];
@@ -897,7 +843,6 @@ $('orderAZ').addEventListener('click',()=>setOrder('az'));
 $('orderZA').addEventListener('click',()=>setOrder('za'));
 $('orderShuffle').addEventListener('click',()=>setOrder('shuffle'));
 
-// ── KEYBOARD ──
 document.addEventListener('keydown',e=>{
   if(e.target.tagName==='INPUT')return;
   if(e.code==='Space'){e.preventDefault();playBtn.click();}
